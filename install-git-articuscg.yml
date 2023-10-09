@@ -4,7 +4,7 @@
   gather_facts: no
   remote_user: root
   #become: true
-  #become_user: root"{{ install_for_user }}" # задается в ./host_vars/
+  #become_user: "{{ install_for_user }}" # задается в ./host_vars/
 
   tasks:
     - debug:
