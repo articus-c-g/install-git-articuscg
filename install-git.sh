@@ -1,0 +1,1 @@
+ansible-playbook -i inventory.ini --limit 172.16.202.202 install-git-articus.yml

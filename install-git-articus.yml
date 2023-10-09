@@ -1,0 +1,45 @@
+---
+- name: Установка окружения для использования github репозиторев git@github.com:articus-c-g
+  hosts: all
+  gather_facts: no
+  remote_user: root
+  #become: true
+  #become_user: root"{{ install_for_user }}" # задается в ./host_vars/
+
+  tasks:
+    - debug:
+        msg: "Установка git пользователю {{ ansible_user }} и публичного ключа для репозиториев пользователя git@github.com:articus-c-g"
+
+    - name: Добавление параметра StrictHostKeyChecking no в  ~/.ssh/config
+      ansible.builtin.lineinfile:
+        path: "~/.ssh/config"
+        regexp: "^StrictHostKeyChecking"
+        line: "StrictHostKeyChecking no"
+        mode: "u+rw,g+r,o+r"
+        create: yes
+
+    - name: Копирование публичного ключа ~/.ssh/articus-cg на удаленный хост
+      copy:
+        src: /home/develop/.ssh/articus-cg
+        dest: ~/.ssh/articus-cg
+        mode: '0600'
+
+    - name: Добавление секции Host github.com в ~/.ssh/config 
+      blockinfile:
+        path: ~/.ssh/config
+        block: |
+          Host github.com
+             UpdateHostKeys yes
+             HostName github.com
+             User git
+             IdentityFile ~/.ssh/articus-cg
+             IdentitiesOnly yes
+
+    - name: Установка пакетов git и rsync
+      become_user: root
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - rsync
