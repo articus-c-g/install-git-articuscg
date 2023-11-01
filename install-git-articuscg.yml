@@ -18,7 +18,7 @@
         mode: "u+rw,g+r,o+r"
         create: yes
 
-    - name: Копирование публичного ключа ~/.ssh/articus-cg на удаленный хост
+    - name: Копирование публичного ключа github ~/.ssh/articus-cg на удаленный хост
       copy:
         src: /home/develop/.ssh/articus-cg
         dest: ~/.ssh/articus-cg
